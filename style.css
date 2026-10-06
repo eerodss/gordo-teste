@@ -188,3 +188,15 @@ footer a{text-decoration:none}
 .res-count{font-size:12px;color:var(--cream-dim);letter-spacing:.5px;margin-bottom:18px}
 .res-title{font-size:11px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--cream-dim);margin:26px 0 14px}
 .res-empty{text-align:center;color:var(--cream-dim);font-size:14px;padding:48px 0}
+
+.top-grid{display:grid;gap:14px}
+@media(min-width:760px){.top-grid{grid-template-columns:1fr 1fr}}
+.top-card{display:flex;align-items:center;gap:18px;background:var(--navy-deep);border:1px solid var(--line);border-radius:10px;padding:20px;transition:border-color .2s,transform .2s}
+.top-card:hover{border-color:var(--line-strong);transform:translateY(-2px)}
+.top-num{font-family:var(--serif);font-size:38px;font-weight:700;line-height:1;opacity:.35;min-width:54px;text-align:center}
+.top-img{width:64px;height:64px;border-radius:8px;object-fit:cover;flex-shrink:0}
+.top-body h4{font-size:15.5px;margin-bottom:4px}
+.top-body p{font-size:12px;color:var(--cream-dim);line-height:1.6}
+.top-body .tp{margin-top:8px;font-size:12px;font-weight:600;color:var(--cream)}
+.more-btn{display:flex;align-items:center;gap:8px;margin:28px auto 0;background:transparent;color:var(--cream);border:1px solid var(--line-strong);border-radius:999px;padding:13px 28px;font:700 12px 'Montserrat',sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.more-btn:hover{background:var(--cream);color:var(--navy-deeper);border-color:var(--cream)}

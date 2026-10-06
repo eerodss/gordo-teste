@@ -85,6 +85,9 @@ const DRINKS = [
   ["Suco de polpa (água ou leite)","copo 350 ml ou jarra 1,5L · sabores: abacaxi c/ hortelã, abacaxi, maracujá, acerola, morango, laranja c/ acerola, laranja c/ morango","a partir de R$ 9,00"]
 ];
 
+// Top 10: edite nomes e ordem conforme o cardápio físico (nome exatamente como em DATA)
+const TOP10 = ["Calabresa","Catfrango","Cinco Queijos","MilhiBacon","Palmito Cremoso","Barbecue de Carne","Chicken Cheese","Strogonoff de Carne","Marnata","Bombom com Nutella"];
+
 const COMBOS = [
   ["8 Esfihas","Até 4 sabores tradicionais","R$ 92,00"],
   ["12 Esfihas","Até 4 sabores tradicionais","R$ 126,00"],
@@ -98,13 +101,13 @@ function renderPrices(prices){
 }
 
 // Para adicionar foto a um item, inclua o caminho como 4º valor:
-// ["Calabresa","descrição",true,"images/calabresa.jpg"]  (3º valor = destaque da casa)
+// ["Calabresa","descrição",false,"images/calabresa.jpg"]  (3º valor não é mais usado)
 function renderItems(items, basePrice){
   return '<div class="item-grid">' + items.map(it => `
     <article class="item-card">
       <div class="item-photo">
         ${it[3] ? `<img src="${it[3]}" alt="${it[0]}" loading="lazy">` : '<i class="ti ti-photo"></i>'}
-        ${it[2] ? '<span class="tag">Destaque</span>' : ''}
+        ${TOP10.includes(it[0]) ? '<span class="tag">Top 10</span>' : ''}
       </div>
       <div class="item-body">
         <h4>${it[0]}</h4>
@@ -158,6 +161,17 @@ function buildMenu(){
       <div class="cp">${c[2]}</div>
     </div>
   `).join('');
+
+  document.getElementById('topWrap').innerHTML = TOP10.map((name, i) => {
+    let f = null;
+    for (const k in DATA) { const it = DATA[k].items.find(x => x[0] === name); if (it) { f = {it, price: DATA[k].prices[1][1]}; break; } }
+    if (!f) return '';
+    return `<div class="top-card reveal">
+      <div class="top-num">${String(i + 1).padStart(2, '0')}</div>
+      ${f.it[3] ? `<img class="top-img" src="${f.it[3]}" alt="${name}" loading="lazy">` : ''}
+      <div class="top-body"><h4>${name}</h4><p>${f.it[1]}</p><p class="tp">Pizza a partir de ${f.price}</p></div>
+    </div>`;
+  }).join('');
 
   document.getElementById('grp-salgadas').classList.add('active');
 }
@@ -278,6 +292,32 @@ function setupSearch(){
   document.querySelectorAll('.cat-tab').forEach(t => t.addEventListener('click', () => { if (input.value) { input.value = ''; run(); } }));
 }
 
+function setupMore(){
+  const ROWS = 3;
+  const mq2 = window.matchMedia('(min-width:640px)'), mq3 = window.matchMedia('(min-width:980px)');
+  const cols = () => mq3.matches ? 3 : mq2.matches ? 2 : 1;
+  document.querySelectorAll('#menuContent .item-grid').forEach(grid => {
+    const cards = [...grid.children];
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'more-btn';
+    grid.after(btn);
+    let open = false;
+    const apply = () => {
+      const limit = ROWS * cols();
+      const need = cards.length > limit;
+      cards.forEach((c, i) => { c.hidden = need && !open && i >= limit; });
+      btn.hidden = !need;
+      btn.innerHTML = open ? 'Ver menos <i class="ti ti-chevron-up"></i>' : `Ver mais sabores (${cards.length - limit}) <i class="ti ti-chevron-down"></i>`;
+    };
+    btn.addEventListener('click', () => {
+      open = !open; apply();
+      if (!open) document.querySelector('.menu-wrap').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+    mq2.addEventListener('change', apply); mq3.addEventListener('change', apply);
+    apply();
+  });
+}
+
 function setupNav(){
   const links = document.querySelectorAll('.nav-links a');
   const secs = [...links].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
@@ -289,6 +329,7 @@ function setupNav(){
 }
 
 buildMenu();
+setupMore();
 setupNav();
 setupSearch();
 setupTabs();
