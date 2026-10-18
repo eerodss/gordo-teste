@@ -1,5 +1,10 @@
 const WA_URL = 'https://wa.me/5544999187735';
 
+// Ativa o preset de fotos (bloco salvo em index.html dentro de <template id="preset-fotos">)
+const MOSTRAR_FOTOS = false;
+
+const CAT_LABEL = {salgadas:'Salgadas', especiais:'Especiais', doces:'Doces', docesesp:'Doces especiais'};
+
 const DATA = {
   salgadas: {
     prices: [["Esfiha","R$ 13,00"],["Pizza","R$ 94,00"],["Pizza de Metro","R$ 179,00"]],
@@ -109,7 +114,7 @@ function waLink(msg){
   return `${WA_URL}?text=${encodeURIComponent(msg)}`;
 }
 
-function renderItems(items){
+function renderItems(items, catLabel){
   return '<div class="item-grid">' + items.map(it => `
     <article class="item-card">
       <div class="item-photo">
@@ -120,9 +125,12 @@ function renderItems(items){
         <h4>${it[0]}</h4>
         <p>${it[1]}</p>
         ${it[4] ? `<p class="price">Pizza a partir de ${it[4]}</p>` : ''}
-        <a class="item-buy" href="${waLink(`Olá! Quero pedir a pizza de ${it[0]}.`)}" target="_blank" rel="noopener">
-          <i class="ti ti-brand-whatsapp"></i> Pedir este sabor
-        </a>
+        <div class="item-actions">
+          <button type="button" class="add-btn" data-add="${esc(it[0])}" data-cat="${esc(catLabel || '')}" aria-label="Adicionar ${esc(it[0])} ao carrinho"><svg class="ico"><use href="#i-plus"/></svg></button>
+          <a class="item-buy" href="${waLink(`Olá! Quero pedir a pizza de ${it[0]}.`)}" target="_blank" rel="noopener">
+            Pedir este sabor <svg class="ico"><use href="#i-arrow"/></svg>
+          </a>
+        </div>
       </div>
     </article>
   `).join('') + '</div>';
@@ -135,7 +143,7 @@ function buildMenu(){
     const g = DATA[key];
     html += `<div class="menu-group" id="grp-${key}" data-cat="${key}" role="tabpanel">
       ${renderPrices(g.prices)}
-      ${renderItems(g.items)}
+      ${renderItems(g.items, CAT_LABEL[key])}
     </div>`;
   }
   html += `<div class="menu-group" id="grp-bordas" data-cat="bordas" role="tabpanel">
@@ -168,9 +176,12 @@ function buildMenu(){
       <div class="cn">${c[0]}</div>
       <div class="cd">${c[1]}</div>
       <div class="cp">${c[2]}</div>
-      <a class="item-buy" href="${waLink(`Olá! Quero o combo de ${c[0]} (${c[1].toLowerCase()}).`)}" target="_blank" rel="noopener">
-        <i class="ti ti-brand-whatsapp"></i> Pedir este combo
-      </a>
+      <div class="item-actions">
+        <button type="button" class="add-btn" data-add="${esc(c[0])}" data-cat="Combo" aria-label="Adicionar ${esc(c[0])} ao carrinho"><svg class="ico"><use href="#i-plus"/></svg></button>
+        <a class="item-buy" href="${waLink(`Olá! Quero o combo de ${c[0]} (${c[1].toLowerCase()}).`)}" target="_blank" rel="noopener">
+          Pedir este combo <svg class="ico"><use href="#i-arrow"/></svg>
+        </a>
+      </div>
     </div>
   `).join('');
 
@@ -320,7 +331,7 @@ function setupSearch(){
     let html = '', total = 0;
     for (const k in DATA) {
       const hits = DATA[k].items.filter(it => match(it[0] + ' ' + it[1]));
-      if (hits.length) { total += hits.length; html += `<h5 class="res-title">${CATS[k]}</h5>` + renderItems(hits); }
+      if (hits.length) { total += hits.length; html += `<h5 class="res-title">${CATS[k]}</h5>` + renderItems(hits, CAT_LABEL[k]); }
     }
     const drinks = DRINKS.filter(d => match(d[0] + ' ' + d[1]));
     if (drinks.length) {
@@ -377,7 +388,121 @@ function setupNav(){
   secs.forEach(s => obs.observe(s));
 }
 
+function setupPresetFotos(){
+  if (!MOSTRAR_FOTOS) return;
+  const tpl = document.getElementById('preset-fotos');
+  const grid = document.getElementById('aboutGrid');
+  if (!tpl || !grid) return;
+  const fotos = tpl.content.cloneNode(true);
+  const [aboutPhoto, gallery] = [fotos.querySelector('.photo-placeholder'), fotos.querySelector('.gallery-strip')];
+  grid.classList.add('has-photo');
+  grid.append(aboutPhoto);
+  grid.after(gallery);
+}
+
+// Carrinho: guarda seleção em localStorage (só para este navegador)
+const CART_KEY = 'gordo-carrinho';
+let cart = {};
+try { cart = JSON.parse(localStorage.getItem(CART_KEY)) || {}; } catch (e) { cart = {}; }
+
+function saveCart(){
+  try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) {}
+}
+
+function cartTotal(){
+  return Object.values(cart).reduce((n, it) => n + it.qty, 0);
+}
+
+function cartMessage(){
+  const lines = Object.values(cart).map(it => `- ${it.qty}x ${it.name}${it.cat ? ` (${it.cat})` : ''}`);
+  return 'Olá! Quero pedir:\n' + lines.join('\n');
+}
+
+function renderCart(){
+  const list = document.getElementById('cartList');
+  const empty = document.getElementById('cartEmpty');
+  const count = document.getElementById('cartCount');
+  const send = document.getElementById('cartSend');
+  const items = Object.entries(cart);
+  const total = cartTotal();
+
+  list.innerHTML = items.map(([key, it]) => `
+    <li class="cart-item">
+      <div class="cart-info">
+        <span class="cart-name">${esc(it.name)}</span>
+        ${it.cat ? `<span class="cart-cat">${esc(it.cat)}</span>` : ''}
+      </div>
+      <div class="cart-qty">
+        <button type="button" data-dec="${esc(key)}" aria-label="Diminuir ${esc(it.name)}">−</button>
+        <span>${it.qty}</span>
+        <button type="button" data-inc="${esc(key)}" aria-label="Aumentar ${esc(it.name)}"><svg class="ico"><use href="#i-plus"/></svg></button>
+      </div>
+    </li>
+  `).join('');
+
+  empty.hidden = items.length > 0;
+  count.textContent = total;
+  count.hidden = total === 0;
+  send.href = total ? waLink(cartMessage()) : WA_URL;
+  document.getElementById('cartClear').hidden = !items.length;
+}
+
+function changeCart(key, name, cat, delta){
+  const current = cart[key] ? cart[key].qty : 0;
+  const qty = current + delta;
+  if (qty <= 0) delete cart[key];
+  else cart[key] = {name, cat, qty};
+  saveCart();
+  renderCart();
+}
+
+function setupCart(){
+  const panel = document.getElementById('cart');
+  const overlay = document.getElementById('cartOverlay');
+  const open = () => {
+    panel.classList.add('open'); overlay.classList.add('open');
+    panel.setAttribute('aria-hidden', 'false');
+    document.getElementById('cartClose').focus();
+  };
+  const close = () => {
+    panel.classList.remove('open'); overlay.classList.remove('open');
+    panel.setAttribute('aria-hidden', 'true');
+    document.getElementById('cartBtn').focus();
+  };
+  document.getElementById('cartBtn').addEventListener('click', open);
+  document.getElementById('cartClose').addEventListener('click', close);
+  overlay.addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && panel.classList.contains('open')) close(); });
+
+  // Botão + nos cards (sabores e combos)
+  document.addEventListener('click', e => {
+    const add = e.target.closest('[data-add]');
+    if (add) {
+      const name = add.dataset.add, cat = add.dataset.cat;
+      changeCart(cat + '|' + name, name, cat, 1);
+      add.classList.add('added');
+      setTimeout(() => add.classList.remove('added'), 600);
+      return;
+    }
+    const inc = e.target.closest('[data-inc]');
+    const dec = e.target.closest('[data-dec]');
+    if (inc || dec) {
+      const key = (inc || dec).dataset[inc ? 'inc' : 'dec'];
+      const it = cart[key];
+      if (it) changeCart(key, it.name, it.cat, inc ? 1 : -1);
+    }
+  });
+
+  document.getElementById('cartClear').addEventListener('click', () => {
+    cart = {}; saveCart(); renderCart();
+  });
+
+  renderCart();
+}
+
 buildMenu();
+setupPresetFotos();
+setupCart();
 setupMore();
 setupNav();
 setupSearch();
