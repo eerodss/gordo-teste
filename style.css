@@ -119,10 +119,6 @@ hr.full-divider{border:0;border-top:1px solid var(--line);max-width:1080px;margi
 .item-card{display:flex;flex-direction:column}
 .item-body{flex:1;display:flex;flex-direction:column}
 .item-actions{margin-top:auto;display:flex;gap:8px;align-items:stretch}
-.item-buy{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;padding:0 14px;border-radius:999px;border:1px solid #9CEFB0;background:#9CEFB0;color:#03331a;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;text-decoration:none;transition:filter .2s,transform .15s}
-.item-buy:hover{filter:brightness(1.06);transform:translateY(-1px)}
-.item-buy .ico{width:16px;height:16px}
-.item-buy .ico + .ico{width:12px;height:12px}
 .add-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 16px;border-radius:999px;border:1px solid var(--cream);background:var(--cream);color:var(--navy-deeper);font:700 13px 'Montserrat',sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:transform .15s,background .2s,border-color .2s}
 .add-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.3)}
 .add-btn.added{background:#9CEFB0;border-color:#9CEFB0}
@@ -132,7 +128,6 @@ hr.full-divider{border:0;border-top:1px solid var(--line);max-width:1080px;margi
 .toast span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .toast button{flex-shrink:0;border:0;border-radius:999px;background:#9CEFB0;color:#03331a;padding:9px 16px;font:700 11.5px 'Montserrat',sans-serif;letter-spacing:.8px;text-transform:uppercase;cursor:pointer}
 .combo-card .item-actions{margin-top:18px}
-.combo-card .item-buy{min-height:44px}
 .ico{width:1em;height:1em;flex-shrink:0;vertical-align:-0.125em}
 .btn .ico,.cta-top .ico{width:16px;height:16px}
 .ic .ico{width:22px;height:22px}
@@ -141,7 +136,8 @@ hr.full-divider{border:0;border-top:1px solid var(--line);max-width:1080px;margi
 .badge-pill .ico{width:15px;height:15px}
 .wa-float .ico{width:28px;height:28px}
 .header-actions{display:flex;align-items:center;gap:10px}
-.cart-btn{position:relative;width:40px;height:40px;border-radius:4px;border:1px solid var(--line-strong);background:transparent;color:var(--cream);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s}
+.cart-btn{position:relative;min-height:40px;padding:0 14px;gap:8px;border-radius:4px;border:1px solid var(--line-strong);background:transparent;color:var(--cream);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s}
+.cart-label{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
 .cart-btn:hover{background:rgba(226,255,255,.08)}
 .cart-btn .ico{width:20px;height:20px}
 .cart-count{position:absolute;top:-7px;right:-7px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--cream);color:var(--navy-deeper);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
@@ -214,7 +210,10 @@ hr.full-divider{border:0;border-top:1px solid var(--line);max-width:1080px;margi
 .detail{font-size:13.5px;color:var(--cream);line-height:1.6;margin-bottom:8px;font-weight:500}
 .meta{font-size:11.5px;color:var(--cream-dim);margin-bottom:18px}
 .mini-btn{margin-top:auto;display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:999px;border:1px solid var(--line-strong);font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;text-decoration:none;transition:all .2s}
-.mini-btn:hover,.info-card.whatsapp .mini-btn{background:var(--cream);color:var(--navy-deeper);border-color:var(--cream)}
+.mini-btn:hover{background:var(--cream);color:var(--navy-deeper);border-color:var(--cream)}
+.info-card.whatsapp .mini-btn{background:#9CEFB0;color:#03331a;border-color:#9CEFB0}
+.info-card.whatsapp .mini-btn:hover{filter:brightness(1.06)}
+.info-card.whatsapp .ic{border-color:#9CEFB0;background:rgba(156,239,176,.12)}
 .map-section{margin-top:20px;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid}
 @media(min-width:760px){.map-section{grid-template-columns:1.3fr 1fr}}
 .map-embed{aspect-ratio:16/10;min-height:260px;background:var(--navy-deep)}

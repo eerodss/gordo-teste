@@ -127,9 +127,6 @@ function renderItems(items, catLabel){
         ${it[4] ? `<p class="price">Pizza a partir de ${it[4]}</p>` : ''}
         <div class="item-actions">
           <button type="button" class="add-btn" data-add="${esc(it[0])}" data-cat="${esc(catLabel || '')}" aria-label="Adicionar ${esc(it[0])} ao carrinho"><svg class="ico"><use href="#i-cart"/></svg> Adicionar</button>
-          <a class="item-buy" href="${waLink(`Olá! Quero pedir a pizza de ${it[0]}.`)}" target="_blank" rel="noopener" aria-label="Pedir ${esc(it[0])} pelo WhatsApp">
-            <svg class="ico"><use href="#i-wa"/></svg> Pedir <svg class="ico"><use href="#i-arrow"/></svg>
-          </a>
         </div>
       </div>
     </article>
@@ -178,9 +175,6 @@ function buildMenu(){
       <div class="cp">${c[2]}</div>
       <div class="item-actions">
         <button type="button" class="add-btn" data-add="${esc(c[0])}" data-cat="Combo" aria-label="Adicionar ${esc(c[0])} ao carrinho"><svg class="ico"><use href="#i-cart"/></svg> Adicionar</button>
-        <a class="item-buy" href="${waLink(`Olá! Quero o combo de ${c[0]} (${c[1].toLowerCase()}).`)}" target="_blank" rel="noopener" aria-label="Pedir combo ${esc(c[0])} pelo WhatsApp">
-          <svg class="ico"><use href="#i-wa"/></svg> Pedir <svg class="ico"><use href="#i-arrow"/></svg>
-        </a>
       </div>
     </div>
   `).join('');
