@@ -24,6 +24,7 @@
   </div>
   <div class="nav-links">
     <a href="#sobre">Sobre</a>
+    <a href="#top10">Top 10</a>
     <a href="#cardapio">Cardápio</a>
     <a href="#combos">Combos</a>
     <a href="#contato">Contato</a>
@@ -46,10 +47,7 @@
   </svg>
 
   <span class="eyebrow">Tradição em Cianorte</span>
-  <div class="hero-logo-frame">
-    <img src="logo.png" alt="Pizza do Gordo">
-  </div>
-  <h2>Pizza do <em>Gordo</em></h2>
+  <h1>Pizza do <em>Gordo</em></h1>
   <p class="lede">Mais de quarenta sabores, entre salgados e doces, em esfihas, pizzas tradicionais de 12 pedaços e a renomada pizza de metro, com 36 pedaços. Massa artesanal, ingredientes selecionados e entrega feita com todo o cuidado.</p>
   <div class="hero-ctas">
     <a class="btn btn-primary" href="https://wa.me/5544999187735" target="_blank" rel="noopener">
@@ -60,6 +58,7 @@
 </section>
 
 <div class="badges-strip">
+  <div class="badge-pill" id="openStatus" hidden></div>
   <div class="badge-pill"><i class="ti ti-clock"></i> Terça a domingo · 18h às 23h30</div>
   <div class="badge-pill"><i class="ti ti-pizza"></i> +40 sabores</div>
   <div class="badge-pill"><i class="ti ti-map-pin"></i> Av. Santa Catarina, 791</div>
@@ -80,19 +79,6 @@
         <div class="stat"><b class="counter" data-target="6">0</b><span>Dias por semana</span></div>
       </div>
     </div>
-    <div class="photo-placeholder reveal">
-      <div class="ph-content">
-        <i class="ti ti-photo"></i>
-        <span>Foto da pizzaria</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="gallery-strip">
-    <div class="photo-placeholder square reveal"><div class="ph-content"><i class="ti ti-pizza"></i><span>Foto da pizza</span></div></div>
-    <div class="photo-placeholder square reveal"><div class="ph-content"><i class="ti ti-flame"></i><span>Forno</span></div></div>
-    <div class="photo-placeholder square reveal"><div class="ph-content"><i class="ti ti-chef-hat"></i><span>Equipe</span></div></div>
-    <div class="photo-placeholder square reveal"><div class="ph-content"><i class="ti ti-building-store"></i><span>Fachada</span></div></div>
   </div>
 </section>
 
@@ -136,23 +122,25 @@
 </section>
 
 <div class="menu-wrap">
-<div class="menu-toolbar">
 <div class="search-box">
   <i class="ti ti-search"></i>
   <input type="search" id="menuSearch" placeholder="Buscar sabor ou ingrediente" aria-label="Buscar no cardápio" autocomplete="off">
   <button type="button" id="searchClear" aria-label="Limpar busca" hidden><i class="ti ti-x"></i></button>
 </div>
-<div class="cat-tabs" id="catTabs" role="tablist">
-  <button class="cat-tab active" data-cat="salgadas">Salgadas</button>
-  <button class="cat-tab" data-cat="especiais">Especiais</button>
-  <button class="cat-tab" data-cat="doces">Doces</button>
-  <button class="cat-tab" data-cat="docesesp">Doces especiais</button>
-  <button class="cat-tab" data-cat="bordas">Bordas</button>
-  <button class="cat-tab" data-cat="bebidas">Bebidas</button>
+<div class="menu-toolbar">
+<div class="cat-tabs" id="catTabs" role="tablist" aria-label="Categorias do cardápio">
+  <button class="cat-tab active" role="tab" aria-selected="true" data-cat="salgadas">Salgadas</button>
+  <button class="cat-tab" role="tab" aria-selected="false" tabindex="-1" data-cat="especiais">Especiais</button>
+  <button class="cat-tab" role="tab" aria-selected="false" tabindex="-1" data-cat="doces">Doces</button>
+  <button class="cat-tab" role="tab" aria-selected="false" tabindex="-1" data-cat="docesesp">Doces especiais</button>
+  <button class="cat-tab" role="tab" aria-selected="false" tabindex="-1" data-cat="bordas">Bordas</button>
+  <button class="cat-tab" role="tab" aria-selected="false" tabindex="-1" data-cat="bebidas">Bebidas</button>
 </div>
 </div>
 
-<div id="menuContent"></div>
+<div id="menuContent">
+  <noscript><p class="res-empty">Ative o JavaScript para ver o cardápio, ou peça pelo <a href="https://wa.me/5544999187735" target="_blank" rel="noopener">WhatsApp</a>.</p></noscript>
+</div>
 <div id="searchResults" aria-live="polite" hidden></div>
 </div>
 
@@ -265,7 +253,7 @@
 
 <section class="final-cta">
   <div class="divider-orn"><div class="ln"></div><i class="ti ti-pizza"></i><div class="ln"></div></div>
-  <h3 style="margin-top:30px;">Faça o seu pedido</h3>
+  <h3>Faça o seu pedido</h3>
   <p>Entre em contato pelo WhatsApp e escolha os seus sabores favoritos.</p>
   <a class="btn btn-primary" href="https://wa.me/5544999187735" target="_blank" rel="noopener">
     <i class="ti ti-brand-whatsapp"></i> Pedir pelo WhatsApp
@@ -275,6 +263,7 @@
 <footer>
   Pizza do Gordo · Av. Santa Catarina, 791, Cianorte - PR ·
   <a href="https://wa.me/5544999187735" target="_blank" rel="noopener">(44) 99918-7735</a>
+  <div><a class="back-top" href="#">Voltar ao topo <i class="ti ti-arrow-up"></i></a></div>
 </footer>
 
 <a class="wa-float" href="https://wa.me/5544999187735" target="_blank" rel="noopener" aria-label="WhatsApp">

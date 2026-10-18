@@ -1,3 +1,5 @@
+const WA_URL = 'https://wa.me/5544999187735';
+
 const DATA = {
   salgadas: {
     prices: [["Esfiha","R$ 13,00"],["Pizza","R$ 94,00"],["Pizza de Metro","R$ 179,00"]],
@@ -100,9 +102,14 @@ function renderPrices(prices){
   ).join('') + '</div>';
 }
 
-// Para adicionar foto a um item, inclua o caminho como 4º valor:
-// ["Calabresa","descrição",false,"images/calabresa.jpg"]  (3º valor não é mais usado)
-function renderItems(items, basePrice){
+// Formato de cada sabor: [nome, descrição, (não usado), foto, preço]
+// foto: caminho da imagem ou "" (sem foto)
+// preço: "R$ 00,00" do sabor, que varia conforme os ingredientes; sem preço, a linha não aparece
+function waLink(msg){
+  return `${WA_URL}?text=${encodeURIComponent(msg)}`;
+}
+
+function renderItems(items){
   return '<div class="item-grid">' + items.map(it => `
     <article class="item-card">
       <div class="item-photo">
@@ -112,7 +119,10 @@ function renderItems(items, basePrice){
       <div class="item-body">
         <h4>${it[0]}</h4>
         <p>${it[1]}</p>
-        <p class="price">A partir de ${basePrice}</p>
+        ${it[4] ? `<p class="price">Pizza a partir de ${it[4]}</p>` : ''}
+        <a class="item-buy" href="${waLink(`Olá! Quero pedir a pizza de ${it[0]}.`)}" target="_blank" rel="noopener">
+          <i class="ti ti-brand-whatsapp"></i> Pedir este sabor
+        </a>
       </div>
     </article>
   `).join('') + '</div>';
@@ -123,13 +133,12 @@ function buildMenu(){
   let html = '';
   for (const key in DATA) {
     const g = DATA[key];
-    const basePrice = g.prices[0][1];
-    html += `<div class="menu-group" id="grp-${key}" data-cat="${key}">
+    html += `<div class="menu-group" id="grp-${key}" data-cat="${key}" role="tabpanel">
       ${renderPrices(g.prices)}
-      ${renderItems(g.items, basePrice)}
+      ${renderItems(g.items)}
     </div>`;
   }
-  html += `<div class="menu-group" id="grp-bordas" data-cat="bordas">
+  html += `<div class="menu-group" id="grp-bordas" data-cat="bordas" role="tabpanel">
     <div class="borda-grid">
     ${BORDAS.map(b => `
       <div class="borda-table">
@@ -139,7 +148,7 @@ function buildMenu(){
     `).join('')}
     </div>
   </div>`;
-  html += `<div class="menu-group" id="grp-bebidas" data-cat="bebidas">
+  html += `<div class="menu-group" id="grp-bebidas" data-cat="bebidas" role="tabpanel">
     <div class="drinks-grid">
     ${DRINKS.map(d => `
       <div class="drink-row">
@@ -159,17 +168,20 @@ function buildMenu(){
       <div class="cn">${c[0]}</div>
       <div class="cd">${c[1]}</div>
       <div class="cp">${c[2]}</div>
+      <a class="item-buy" href="${waLink(`Olá! Quero o combo de ${c[0]} (${c[1].toLowerCase()}).`)}" target="_blank" rel="noopener">
+        <i class="ti ti-brand-whatsapp"></i> Pedir este combo
+      </a>
     </div>
   `).join('');
 
   document.getElementById('topWrap').innerHTML = TOP10.map((name, i) => {
-    let f = null;
-    for (const k in DATA) { const it = DATA[k].items.find(x => x[0] === name); if (it) { f = {it, price: DATA[k].prices[1][1]}; break; } }
-    if (!f) return '';
+    let it = null;
+    for (const k in DATA) { const f = DATA[k].items.find(x => x[0] === name); if (f) { it = f; break; } }
+    if (!it) return '';
     return `<div class="top-card reveal">
       <div class="top-num">${String(i + 1).padStart(2, '0')}</div>
-      ${f.it[3] ? `<img class="top-img" src="${f.it[3]}" alt="${name}" loading="lazy">` : ''}
-      <div class="top-body"><h4>${name}</h4><p>${f.it[1]}</p><p class="tp">Pizza a partir de ${f.price}</p></div>
+      ${it[3] ? `<img class="top-img" src="${it[3]}" alt="${name}" loading="lazy">` : ''}
+      <div class="top-body"><h4>${name}</h4><p>${it[1]}</p>${it[4] ? `<p class="tp">Pizza a partir de ${it[4]}</p>` : ''}</div>
     </div>`;
   }).join('');
 
@@ -177,17 +189,53 @@ function buildMenu(){
 }
 
 function setupTabs(){
-  const tabs = document.querySelectorAll('.cat-tab');
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      document.querySelectorAll('.menu-group').forEach(g => g.classList.remove('active'));
-      const target = document.getElementById('grp-' + tab.dataset.cat);
-      if (target) target.classList.add('active');
-      tab.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+  const tabs = [...document.querySelectorAll('.cat-tab')];
+  const select = (tab, focus) => {
+    tabs.forEach(t => {
+      const on = t === tab;
+      t.classList.toggle('active', on);
+      t.setAttribute('aria-selected', on);
+      t.tabIndex = on ? 0 : -1;
+    });
+    document.querySelectorAll('.menu-group').forEach(g => g.classList.toggle('active', g.id === 'grp-' + tab.dataset.cat));
+    if (focus) tab.focus();
+    tab.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+  };
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => select(tab, false));
+    tab.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      select(next, true);
     });
   });
+}
+
+function setupOpenStatus(){
+  const el = document.getElementById('openStatus');
+  if (!el) return;
+  const OPEN = 18 * 60, CLOSE = 23 * 60 + 30;
+  const update = () => {
+    // Horário de Cianorte (PR), fuso de Brasília
+    const now = new Date(new Date().toLocaleString('en-US', {timeZone: 'America/Sao_Paulo'}));
+    const day = now.getDay();
+    const mins = now.getHours() * 60 + now.getMinutes();
+    const isOpenDay = day !== 1;
+    let text, open = false;
+    if (isOpenDay && mins >= OPEN && mins < CLOSE) {
+      text = 'Aberto agora · fecha às 23h30'; open = true;
+    } else if (isOpenDay && mins < OPEN) {
+      text = 'Fechado · abre hoje às 18h';
+    } else {
+      const next = (day + 1) % 7;
+      text = next === 1 ? 'Fechado · abre terça às 18h' : 'Fechado · abre amanhã às 18h';
+    }
+    el.innerHTML = `<span class="status-dot ${open ? 'on' : ''}"></span> ${text}`;
+    el.hidden = false;
+  };
+  update();
+  setInterval(update, 60 * 1000);
 }
 
 function setupReveal(){
@@ -272,7 +320,7 @@ function setupSearch(){
     let html = '', total = 0;
     for (const k in DATA) {
       const hits = DATA[k].items.filter(it => match(it[0] + ' ' + it[1]));
-      if (hits.length) { total += hits.length; html += `<h5 class="res-title">${CATS[k]}</h5>` + renderItems(hits, DATA[k].prices[0][1]); }
+      if (hits.length) { total += hits.length; html += `<h5 class="res-title">${CATS[k]}</h5>` + renderItems(hits); }
     }
     const drinks = DRINKS.filter(d => match(d[0] + ' ' + d[1]));
     if (drinks.length) {
@@ -307,6 +355,7 @@ function setupMore(){
       const need = cards.length > limit;
       cards.forEach((c, i) => { c.hidden = need && !open && i >= limit; });
       btn.hidden = !need;
+      btn.setAttribute('aria-expanded', open);
       btn.innerHTML = open ? 'Ver menos <i class="ti ti-chevron-up"></i>' : `Ver mais sabores (${cards.length - limit}) <i class="ti ti-chevron-down"></i>`;
     };
     btn.addEventListener('click', () => {
@@ -336,3 +385,4 @@ setupTabs();
 setupReveal();
 setupHeaderScroll();
 setupCounters();
+setupOpenStatus();
