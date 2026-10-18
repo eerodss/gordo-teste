@@ -126,7 +126,7 @@ hr.full-divider{border:0;border-top:1px solid var(--line);max-width:1080px;margi
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:170;transform:translate(-50%,160%);opacity:0;display:flex;align-items:center;gap:14px;width:max-content;max-width:calc(100% - 32px);padding:12px 12px 12px 18px;border-radius:12px;background:var(--navy-deeper);border:1px solid var(--line-strong);box-shadow:0 10px 30px rgba(0,0,0,.45);font-size:13.5px;transition:transform .35s ease,opacity .35s ease;pointer-events:none}
 .toast.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
 .toast span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.toast button{flex-shrink:0;border:0;border-radius:999px;background:#9CEFB0;color:#03331a;padding:9px 16px;font:700 11.5px 'Montserrat',sans-serif;letter-spacing:.8px;text-transform:uppercase;cursor:pointer}
+.toast button{flex-shrink:0;border:0;border-radius:999px;background:var(--cream);color:var(--navy-deeper);padding:9px 16px;font:700 11.5px 'Montserrat',sans-serif;letter-spacing:.8px;text-transform:uppercase;cursor:pointer}
 .combo-card .item-actions{margin-top:18px}
 .ico{width:1em;height:1em;flex-shrink:0;vertical-align:-0.125em}
 .btn .ico,.cta-top .ico{width:16px;height:16px}
@@ -211,6 +211,8 @@ hr.full-divider{border:0;border-top:1px solid var(--line);max-width:1080px;margi
 .meta{font-size:11.5px;color:var(--cream-dim);margin-bottom:18px}
 .mini-btn{margin-top:auto;display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:999px;border:1px solid var(--line-strong);font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;text-decoration:none;transition:all .2s}
 .mini-btn:hover{background:var(--cream);color:var(--navy-deeper);border-color:var(--cream)}
+.btn-wa{background:#9CEFB0;color:#03331a;border-color:#9CEFB0}
+.btn-wa:hover{filter:brightness(1.06);box-shadow:0 6px 18px rgba(0,0,0,.3);transform:translateY(-1px)}
 .info-card.whatsapp .mini-btn{background:#9CEFB0;color:#03331a;border-color:#9CEFB0}
 .info-card.whatsapp .mini-btn:hover{filter:brightness(1.06)}
 .info-card.whatsapp .ic{border-color:#9CEFB0;background:rgba(156,239,176,.12)}
