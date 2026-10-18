@@ -126,9 +126,9 @@ function renderItems(items, catLabel){
         <p>${it[1]}</p>
         ${it[4] ? `<p class="price">Pizza a partir de ${it[4]}</p>` : ''}
         <div class="item-actions">
-          <button type="button" class="add-btn" data-add="${esc(it[0])}" data-cat="${esc(catLabel || '')}" aria-label="Adicionar ${esc(it[0])} ao carrinho"><svg class="ico"><use href="#i-plus"/></svg></button>
-          <a class="item-buy" href="${waLink(`Olá! Quero pedir a pizza de ${it[0]}.`)}" target="_blank" rel="noopener">
-            Pedir este sabor <svg class="ico"><use href="#i-arrow"/></svg>
+          <button type="button" class="add-btn" data-add="${esc(it[0])}" data-cat="${esc(catLabel || '')}" aria-label="Adicionar ${esc(it[0])} ao carrinho"><svg class="ico"><use href="#i-cart"/></svg> Adicionar</button>
+          <a class="item-buy" href="${waLink(`Olá! Quero pedir a pizza de ${it[0]}.`)}" target="_blank" rel="noopener" aria-label="Pedir ${esc(it[0])} pelo WhatsApp">
+            <svg class="ico"><use href="#i-wa"/></svg> Pedir <svg class="ico"><use href="#i-arrow"/></svg>
           </a>
         </div>
       </div>
@@ -177,9 +177,9 @@ function buildMenu(){
       <div class="cd">${c[1]}</div>
       <div class="cp">${c[2]}</div>
       <div class="item-actions">
-        <button type="button" class="add-btn" data-add="${esc(c[0])}" data-cat="Combo" aria-label="Adicionar ${esc(c[0])} ao carrinho"><svg class="ico"><use href="#i-plus"/></svg></button>
-        <a class="item-buy" href="${waLink(`Olá! Quero o combo de ${c[0]} (${c[1].toLowerCase()}).`)}" target="_blank" rel="noopener">
-          Pedir este combo <svg class="ico"><use href="#i-arrow"/></svg>
+        <button type="button" class="add-btn" data-add="${esc(c[0])}" data-cat="Combo" aria-label="Adicionar ${esc(c[0])} ao carrinho"><svg class="ico"><use href="#i-cart"/></svg> Adicionar</button>
+        <a class="item-buy" href="${waLink(`Olá! Quero o combo de ${c[0]} (${c[1].toLowerCase()}).`)}" target="_blank" rel="noopener" aria-label="Pedir combo ${esc(c[0])} pelo WhatsApp">
+          <svg class="ico"><use href="#i-wa"/></svg> Pedir <svg class="ico"><use href="#i-arrow"/></svg>
         </a>
       </div>
     </div>
@@ -423,8 +423,11 @@ function renderCart(){
   const empty = document.getElementById('cartEmpty');
   const count = document.getElementById('cartCount');
   const send = document.getElementById('cartSend');
+  const sub = document.getElementById('cartSub');
   const items = Object.entries(cart);
   const total = cartTotal();
+
+  sub.textContent = total ? `${total} ${total === 1 ? 'item' : 'itens'}` : 'Nenhum item ainda';
 
   list.innerHTML = items.map(([key, it]) => `
     <li class="cart-item">
@@ -474,7 +477,19 @@ function setupCart(){
   overlay.addEventListener('click', close);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && panel.classList.contains('open')) close(); });
 
-  // Botão + nos cards (sabores e combos)
+  // Aviso de item adicionado, com atalho para abrir o carrinho
+  const toast = document.getElementById('toast');
+  let toastTimer;
+  const hideToast = () => toast.classList.remove('show');
+  const showToast = name => {
+    document.getElementById('toastText').textContent = `${name} foi adicionado ao carrinho`;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(hideToast, 4000);
+  };
+  document.getElementById('toastOpen').addEventListener('click', () => { hideToast(); open(); });
+
+  // Botão Adicionar nos cards (sabores e combos)
   document.addEventListener('click', e => {
     const add = e.target.closest('[data-add]');
     if (add) {
@@ -482,6 +497,7 @@ function setupCart(){
       changeCart(cat + '|' + name, name, cat, 1);
       add.classList.add('added');
       setTimeout(() => add.classList.remove('added'), 600);
+      showToast(name);
       return;
     }
     const inc = e.target.closest('[data-inc]');

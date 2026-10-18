@@ -46,9 +46,6 @@
       <svg class="ico"><use href="#i-cart"/></svg>
       <span class="cart-count" id="cartCount" hidden>0</span>
     </button>
-    <a class="cta-top" href="https://wa.me/5544999187735" target="_blank" rel="noopener">
-      Pedir <svg class="ico"><use href="#i-arrow"/></svg>
-    </a>
   </div>
 </header>
 
@@ -312,18 +309,27 @@
 <div class="cart-overlay" id="cartOverlay"></div>
 <aside class="cart" id="cart" aria-label="Carrinho de pedido" aria-hidden="true">
   <div class="cart-head">
-    <h4>Seu pedido</h4>
+    <div>
+      <span class="cart-kicker">Seu</span>
+      <h4>Pedido</h4>
+      <span class="cart-sub" id="cartSub">Nenhum item ainda</span>
+    </div>
     <button type="button" class="cart-x" id="cartClose" aria-label="Fechar carrinho"><svg class="ico"><use href="#i-close"/></svg></button>
   </div>
   <ul class="cart-list" id="cartList"></ul>
-  <p class="cart-empty" id="cartEmpty">Nenhum item ainda. Toque em <strong>+</strong> nos sabores para montar seu pedido.</p>
+  <p class="cart-empty" id="cartEmpty">Nenhum item ainda. Toque em <strong>Adicionar</strong> nos sabores para montar seu pedido.</p>
   <div class="cart-foot">
-    <a class="btn btn-primary cart-send" id="cartSend" href="https://wa.me/5544999187735" target="_blank" rel="noopener">
-      <svg class="ico"><use href="#i-wa"/></svg> Enviar pedido <svg class="ico"><use href="#i-arrow"/></svg>
+    <a class="cart-send" id="cartSend" href="https://wa.me/5544999187735" target="_blank" rel="noopener">
+      <svg class="ico"><use href="#i-wa"/></svg> Enviar pelo WhatsApp <svg class="ico"><use href="#i-arrow"/></svg>
     </a>
-    <button type="button" class="cart-clear" id="cartClear">Limpar carrinho</button>
+    <button type="button" class="cart-clear" id="cartClear">Esvaziar carrinho</button>
   </div>
 </aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <span id="toastText"></span>
+  <button type="button" id="toastOpen">Ver carrinho</button>
+</div>
 
 <script src="script.js"></script>
 
