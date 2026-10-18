@@ -1,7 +1,7 @@
 const WA_URL = 'https://wa.me/5544999187735';
 
 // Ativa o preset de fotos (bloco salvo em index.html dentro de <template id="preset-fotos">)
-const MOSTRAR_FOTOS = false;
+const MOSTRAR_FOTOS = true;
 
 const CAT_LABEL = {salgadas:'Salgadas', especiais:'Especiais', doces:'Doces', docesesp:'Doces especiais'};
 
